@@ -13,12 +13,24 @@ app.get("/", async (req, res) => {
 
     // Inject CSS to force transparent bg
     html = html.replace(
-      "</head>",
-      `<style>
-         html, body { background: transparent !important; margin:0; padding:0; overflow:hidden; }
-         * { background-color: transparent !important; }
-       </style></head>`
-    );
+  "</head>",
+  `<style>
+     html, body {
+       background: transparent !important;
+       margin: 0 !important;
+       padding: 0 !important;
+       overflow: hidden !important;
+       height: auto !important;
+     }
+     body > div {
+       background: transparent !important;
+     }
+     /* shrink any full-page wrapper that creates whitespace */
+     body > *:not(:first-child) {
+       display: none !important;
+     }
+   </style></head>`
+);
 
     res.set("Content-Type", "text/html; charset=utf-8");
     res.set("X-Frame-Options", "");   // strip

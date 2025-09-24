@@ -11,12 +11,18 @@ app.get("/", async (req, res) => {
     const response = await fetch(WIDGET_URL);
     let html = await response.text();
 
-    // Clean headers
-    res.set("Content-Type", "text/html; charset=utf-8");
-    res.removeHeader("X-Frame-Options");
-    res.set("X-Frame-Options", ""); // explicitly unset
-    res.set("Content-Security-Policy", ""); // unset CSP if needed
+    // Inject CSS to force transparent bg
+    html = html.replace(
+      "</head>",
+      `<style>
+         html, body { background: transparent !important; margin:0; padding:0; overflow:hidden; }
+         * { background-color: transparent !important; }
+       </style></head>`
+    );
 
+    res.set("Content-Type", "text/html; charset=utf-8");
+    res.set("X-Frame-Options", "");   // strip
+    res.set("Content-Security-Policy", ""); // strip CSP if present
     res.send(html);
   } catch (err) {
     console.error("Proxy error:", err);
